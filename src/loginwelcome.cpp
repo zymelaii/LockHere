@@ -35,11 +35,25 @@ LoginWelcome::LoginWelcome(QWidget* parent)
 	connect(btMinimize, &QPushButton::clicked, this, &LoginWelcome::shouldMinimize);
 	connect(btClose, &QPushButton::clicked, this, &LoginWelcome::shouldClose);
 
-	connect(liPassword, &utils::LineInput::textChanged, this, [this](const QString& s) {
-		if (s.isEmpty()) {
-			setUnlockEnable(false);
-		} else if (!btUnlock->isEnabled()) {
+	auto cbCheckUnlock = [this] {
+		auto key = !liPassword->text().isEmpty() && !liAccount->text().isEmpty();
+		if (key && !btUnlock->isEnabled()) {
 			setUnlockEnable(true);
+		} else if (!key && btUnlock->isEnabled()) {
+			setUnlockEnable(false);
+		}
+	};
+
+	connect(liAccount, &utils::LineInput::textChanged, this, cbCheckUnlock);
+	connect(liPassword, &utils::LineInput::textChanged, this, cbCheckUnlock);
+
+	connect(liPassword, &utils::LineInput::clicked, this, [this] {
+		if (liPassword->echoMode() == QLineEdit::Password) {
+			liPassword->setEchoMode(QLineEdit::Normal);
+			liPassword->setOptionIcon(":/icons/eye.svg", QColor("#e1e1e1"));
+		} else {
+			liPassword->setEchoMode(QLineEdit::Password);
+			liPassword->setOptionIcon(":/icons/eye-alt.svg", QColor("#e1e1e1"));
 		}
 	});
 }
@@ -103,8 +117,8 @@ void LoginWelcome::uiInitLogo() {
 
 	//! init lbLogo
 	lbLogo->setObjectName("lbLogo");
-    lbLogo->setPixmap(QPixmap(":/icons/logo.png").scaledToHeight(100, Qt::SmoothTransformation));
-    lbLogo->setAlignment(Qt::AlignCenter);
+	lbLogo->setPixmap(QPixmap(":/icons/logo.png").scaledToHeight(100, Qt::SmoothTransformation));
+	lbLogo->setAlignment(Qt::AlignCenter);
 }
 
 void LoginWelcome::uiInitMain() {
@@ -130,13 +144,17 @@ void LoginWelcome::uiInitMain() {
 
 	//! init liAccount
 	liAccount->setHint("logged in as");
+	liAccount->setOptionEnabled(true);
+	liAccount->setOptionIcon(QStringLiteral(":/icons/more.svg"), QColor("#e1e1e1"));
 
 	//! init liPassword
 	liPassword->setHint("enter master password");
+	liPassword->setOptionEnabled(true);
+	liPassword->setOptionIcon(QStringLiteral(":/icons/eye-alt.svg"), QColor("#e1e1e1"));
+	liPassword->setEchoMode(QLineEdit::Password);
 
 	//! init btUnlock
 	btUnlock->setObjectName("btUnlock");
-
 	btUnlock->setFixedHeight(32);
 	setUnlockEnable(false);
 	btUnlock->setText("Unlock");

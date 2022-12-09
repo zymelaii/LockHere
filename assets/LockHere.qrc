@@ -5,6 +5,10 @@
         <file>close.svg</file>
         <file>minimize.svg</file>
         <file>minimize-alt.svg</file>
+        <file>more.svg</file>
+        <file>eye.svg</file>
+        <file>eye-alt.svg</file>
+        <file>danger.svg</file>
         <file>lock-unlock.svg</file>
     </qresource>
     <qresource prefix="/qss/">

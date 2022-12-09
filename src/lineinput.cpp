@@ -1,11 +1,13 @@
 #include <lockheresdk/ui/lineinput.h>
 
+#include <lockheresdk/svghelper.h>
 #include <QDebug>
 #include <QFont>
 #include <QFocusEvent>
 #include <QStyleOption>
 #include <QPainter>
 #include <QApplication>
+#include <QSizePolicy>
 
 namespace LockHere {
 namespace Ui {
@@ -38,12 +40,12 @@ LineInput::LineInput(QWidget* parent)
 
 	hloMain = new QHBoxLayout;
 	vloEdit = new QVBoxLayout;
-	hloMain->setSpacing(0);
+	hloMain->setSpacing(8);
 	vloEdit->setSpacing(0);
 
 	lbHint = new QLabel(this);
 	{
-        QFont font("Open Sans", 12);
+		QFont font("Open Sans", 12);
 		font.setCapitalization(QFont::Capitalize);
 		lbHint->setFont(font);
 	}
@@ -133,6 +135,63 @@ void LineInput::focusOutEvent(QFocusEvent* e) {
 
 void LineInput::setHint(const QString& hint) {
 	lbHint->setText(hint);
+}
+
+void LineInput::setOptionEnabled(bool enabled) {
+	if (!enabled && !btOption) return;
+
+	if (enabled) {
+		btOption = new QPushButton(this);
+		btOption->setFocusPolicy(Qt::NoFocus);
+		btOption->setFixedSize(48, 48);
+		btOption->setObjectName("btOption");
+		btOption->setStyleSheet(R"(
+		#btOption {
+			background: transparent;
+			border-radius: 24;
+			border: none;
+		}
+		#btOption:hover {
+			background: #303030;
+		}
+		#btOption:pressed {
+			background: #5d5d5d;
+		})");
+		hloMain->addWidget(btOption);
+		btOption->show();
+		connect(btOption, &QPushButton::clicked, this, &LineInput::clicked);
+	} else {
+		btOption->hide();
+		hloMain->removeWidget(btOption);
+		delete btOption;
+		btOption = nullptr;
+	}
+}
+
+void LineInput::setOptionIcon(const QPixmap& icon) {
+	if (!btOption) return;
+	btOption->setIconSize(btOption->size() / 2);
+	btOption->setIcon(icon);
+}
+
+void LineInput::setOptionIcon(const QString& svgPath, QColor currentColor) {
+	if (!btOption) return;
+	QPixmap* pSvgPixmap = loadSvgAsPixmap(svgPath, btOption->size(), currentColor);
+	btOption->setIconSize(btOption->size() / 2);
+	btOption->setIcon(*pSvgPixmap);
+	delete pSvgPixmap;
+}
+
+LineInput::EchoMode LineInput::echoMode() const {
+	return leInput->echoMode();
+}
+
+void LineInput::setEchoMode(EchoMode mode) {
+	leInput->setEchoMode(mode);
+}
+
+QString LineInput::text() const {
+	return leInput->text();
 }
 
 void LineInput::onActivate() {

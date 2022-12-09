@@ -5,14 +5,11 @@
 #include <QSystemTrayIcon>
 #include <QMenu>
 #include <QAction>
-#include <QPainter>
 #include <QFontDatabase>
-#include <QSvgGenerator>
 #include <memory>
 
 int main(int argc, char* argv[]) {
 	QApplication a(argc, argv);
-
 	QFontDatabase::addApplicationFont(":/font/OpenSans.ttf");
 
 	auto welcomeUi = new LockHere::Ui::LoginWelcome;
@@ -20,14 +17,14 @@ int main(int argc, char* argv[]) {
 	placer->setBackgroundColor(QColor(32, 32, 32))
 		->setBorderRadius(16)
 		->setContent(welcomeUi)
-		->show();
+        ->setFixedWidth(512);
 
 	auto actionQuit = new QAction(QStringLiteral("&Quit"));
 	auto menu		= new QMenu(placer.get());
 	menu->addAction(actionQuit);
 
 	auto trayIcon = new QSystemTrayIcon(placer.get());
-	trayIcon->setIcon(a.windowIcon());
+	trayIcon->setIcon(QIcon(":/icons/app.ico"));
 	trayIcon->setContextMenu(menu);
 
 	QObject::connect(
@@ -49,7 +46,6 @@ int main(int argc, char* argv[]) {
 					 &LockHere::Ui::LoginWelcome::shouldMinimizeToTray,
 					 placer.get(),
 					 [w = placer.get(), &trayIcon] {
-						 qDebug() << "trigger LockHere::Ui::LoginWelcome::shouldMinimizeToTray\n";
 						 w->setWindowFlags(w->windowFlags() | Qt::Tool);
 						 trayIcon->show();
 					 });
@@ -65,6 +61,8 @@ int main(int argc, char* argv[]) {
 			welcomeUi->hide();
 			a.quit();
 		});
+
+	placer->show();
 
 	return a.exec();
 }
