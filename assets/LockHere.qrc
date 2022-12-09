@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/icons/">
+        <file>app.ico</file>
+        <file>logo.png</file>
+        <file>close.svg</file>
+        <file>minimize.svg</file>
+        <file>minimize-alt.svg</file>
+        <file>lock-unlock.svg</file>
+    </qresource>
+    <qresource prefix="/qss/">
+        <file>loginwelcom.qss</file>
+    </qresource>
+    <qresource prefix="/font/">
+        <file>OpenSans.ttf</file>
+    </qresource>
+</RCC>

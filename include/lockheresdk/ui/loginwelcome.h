@@ -22,8 +22,10 @@ private:
 	void uiInitSysmenu();
 	void uiInitLogo();
 	void uiInitMain();
+	void setUnlockEnable(bool enabled);
 
 signals:
+	void shouldMinimizeToTray();
 	void shouldMinimize();
 	void shouldClose();
 
@@ -31,6 +33,7 @@ private:
 	QVBoxLayout* layout;
 
 	QHBoxLayout* hloSysmenu;
+	QPushButton* btMinimizeToTray;
 	QPushButton* btMinimize;
 	QPushButton* btClose;
 
@@ -41,6 +44,7 @@ private:
 	QLabel*			  lbWelcom;
 	utils::LineInput* liAccount;
 	utils::LineInput* liPassword;
+	QPushButton*	  btUnlock;
 };
 
 

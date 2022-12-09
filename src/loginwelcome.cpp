@@ -1,6 +1,8 @@
 #include <lockheresdk/ui/loginwelcome.h>
 
+#include <lockheresdk/svghelper.h>
 #include <QApplication>
+#include <QFile>
 #include <QStyle>
 
 namespace LockHere {
@@ -8,77 +10,89 @@ namespace Ui {
 
 LoginWelcome::LoginWelcome(QWidget* parent)
 	: QWidget(parent) {
-
-	layout = new QVBoxLayout(this);
-
 	//! init ui
 	uiInitSysmenu();
 	uiInitLogo();
 	uiInitMain();
 
 	//! complete layout
+	layout = new QVBoxLayout(this);
 	layout->addLayout(hloSysmenu);
 	layout->addWidget(lbLogo);
 	layout->addWidget(frMain);
 
-	//! connect signal & slot
-	connect(btMinimize, &QPushButton::clicked, this, [this] { emit shouldMinimize(); });
+	//! install qss
+	QFile qssFile(":/qss/loginwelcom.qss");
+	qssFile.open(QIODevice::ReadOnly);
+	setStyleSheet(qssFile.readAll());
+	qssFile.close();
 
-	connect(btClose, &QPushButton::clicked, this, [this] { emit shouldClose(); });
+	//! configure
+	setFocusPolicy(Qt::NoFocus);
+
+	//! connect signal & slot
+	connect(btMinimizeToTray, &QPushButton::clicked, this, &LoginWelcome::shouldMinimizeToTray);
+	connect(btMinimize, &QPushButton::clicked, this, &LoginWelcome::shouldMinimize);
+	connect(btClose, &QPushButton::clicked, this, &LoginWelcome::shouldClose);
+
+	connect(liPassword, &utils::LineInput::textChanged, this, [this](const QString& s) {
+		if (s.isEmpty()) {
+			setUnlockEnable(false);
+		} else if (!btUnlock->isEnabled()) {
+			setUnlockEnable(true);
+		}
+	});
 }
 
 void LoginWelcome::uiInitSysmenu() {
 	//! allocate
-	hloSysmenu = new QHBoxLayout;
-	btMinimize = new QPushButton;
-	btClose	   = new QPushButton;
+	hloSysmenu		 = new QHBoxLayout;
+	btMinimizeToTray = new QPushButton;
+	btMinimize		 = new QPushButton;
+	btClose			 = new QPushButton;
 
 	//! init hloSysmenu
 	hloSysmenu->setAlignment(Qt::AlignRight);
 
+	//! init btMinimizeToTray
+	btMinimizeToTray->setObjectName("btMinimizeToTray");
+	btMinimizeToTray->setDefault(false);
+	btMinimizeToTray->setFixedSize(16, 16);
+	{
+		auto pSvgPixmap = loadSvgAsPixmap(QStringLiteral(":/icons/minimize-alt.svg"),
+										  btMinimizeToTray->size() - QSize(4, 4),
+										  Qt::white);
+		btMinimizeToTray->setIcon(*pSvgPixmap);
+		delete pSvgPixmap;
+	}
+	btMinimizeToTray->setFocusPolicy(Qt::NoFocus);
+
 	//! init btMinimize
 	btMinimize->setObjectName("btMinimize");
-	btMinimize->setStyleSheet(R"(
-    #btMinimize {
-        border: none;
-        border-radius: 8px;
-    }
-    #btMinimize:!hover {
-        background: #c7cacf;
-    }
-    #btMinimize::hover {
-        background: #d9d9d9;
-    })");
 	btMinimize->setDefault(false);
 	btMinimize->setFixedSize(16, 16);
 	{
-		auto icon = QApplication::style()->standardIcon(QStyle::SP_TitleBarMinButton);
-		btMinimize->setIcon(icon.pixmap(QSize(8, 8)));
+		auto pSvgPixmap = loadSvgAsPixmap(
+			QStringLiteral(":/icons/minimize.svg"), btMinimize->size() - QSize(4, 4), Qt::white);
+		btMinimize->setIcon(*pSvgPixmap);
+		delete pSvgPixmap;
 	}
 	btMinimize->setFocusPolicy(Qt::NoFocus);
 
 	//! init btClose
 	btClose->setObjectName("btClose");
-	btClose->setStyleSheet(R"(
-    #btClose {
-        border: none;
-        border-radius: 8px;
-    }
-    #btClose:!hover {
-        background: #c7cacf;
-    }
-    #btClose::hover {
-        background: red;
-    })");
 	btClose->setDefault(false);
 	btClose->setFixedSize(16, 16);
 	{
-		auto icon = QApplication::style()->standardIcon(QStyle::SP_TitleBarCloseButton);
-		btClose->setIcon(icon.pixmap(QSize(8, 8)));
+		auto pSvgPixmap = loadSvgAsPixmap(
+			QStringLiteral(":/icons/close.svg"), btClose->size() - QSize(4, 4), Qt::white);
+		btClose->setIcon(*pSvgPixmap);
+		delete pSvgPixmap;
 	}
 	btClose->setFocusPolicy(Qt::NoFocus);
 
 	//! complete layout
+	hloSysmenu->addWidget(btMinimizeToTray);
 	hloSysmenu->addWidget(btMinimize);
 	hloSysmenu->addWidget(btClose);
 }
@@ -89,19 +103,8 @@ void LoginWelcome::uiInitLogo() {
 
 	//! init lbLogo
 	lbLogo->setObjectName("lbLogo");
-	lbLogo->setStyleSheet(R"(#lbLogo {
-        background: transparent;
-        color: white;
-        border: none;
-    })");
-	{
-		QFont font;
-		font.setFamily(QString::fromUtf8("Aa叹书体 (非商业使用)"));
-		font.setPointSize(32);
-		lbLogo->setFont(font);
-	}
-	lbLogo->setAlignment(Qt::AlignHCenter);
-	lbLogo->setText("Lock Here");
+    lbLogo->setPixmap(QPixmap(":/icons/logo.png").scaledToHeight(100, Qt::SmoothTransformation));
+    lbLogo->setAlignment(Qt::AlignCenter);
 }
 
 void LoginWelcome::uiInitMain() {
@@ -109,27 +112,19 @@ void LoginWelcome::uiInitMain() {
 	frMain	   = new QFrame;
 	vloMain	   = new QVBoxLayout(frMain);
 	lbWelcom   = new QLabel(frMain);
-	liAccount  = new utils::LineInput;
-	liPassword = new utils::LineInput;
+	liAccount  = new utils::LineInput(frMain);
+	liPassword = new utils::LineInput(frMain);
+	btUnlock   = new QPushButton(frMain);
 
 	//! init frMain
 	frMain->setObjectName("frMain");
-	frMain->setStyleSheet(R"(#frMain {
-        background: #252525;
-        border-radius: 16px;
-        border: 1px solid #303030;
-    })");
+	frMain->setContentsMargins(-1, 8, -1, 8);
 
 	//! init vloMain
 	vloMain->setSpacing(16);
 
 	//! init lbWelcom
 	lbWelcom->setObjectName("lbWelcom");
-	lbWelcom->setStyleSheet(R"(#lbWelcom {
-        background: transparent;
-        color: #9a9a9a;
-        border: none;
-    })");
 	lbWelcom->setAlignment(Qt::AlignHCenter);
 	lbWelcom->setText("Welcom to use Lock Here!");
 
@@ -139,10 +134,31 @@ void LoginWelcome::uiInitMain() {
 	//! init liPassword
 	liPassword->setHint("enter master password");
 
+	//! init btUnlock
+	btUnlock->setObjectName("btUnlock");
+
+	btUnlock->setFixedHeight(32);
+	setUnlockEnable(false);
+	btUnlock->setText("Unlock");
+
 	//! complete layout
 	vloMain->addWidget(lbWelcom);
 	vloMain->addWidget(liAccount);
 	vloMain->addWidget(liPassword);
+	vloMain->addWidget(btUnlock);
+}
+
+void LoginWelcome::setUnlockEnable(bool enabled) {
+	auto w = btUnlock->fontInfo().pixelSize() + 4;
+
+	QString	 svgPath(QStringLiteral(":/icons/lock-unlock.svg"));
+	QSize	 icoSize(w, w);
+	QColor	 currentColor(enabled ? "#dae0e3" : "#818283");
+	QPixmap* pSvgPixmap = loadSvgAsPixmap(svgPath, icoSize, currentColor);
+
+	btUnlock->setEnabled(enabled);
+	btUnlock->setIcon(*pSvgPixmap);
+	delete pSvgPixmap;
 }
 
 }	// namespace Ui

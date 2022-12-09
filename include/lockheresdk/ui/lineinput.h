@@ -33,6 +33,7 @@ protected slots:
 signals:
 	void activate();
 	void deactivate();
+	void textChanged(const QString&);
 
 private:
 	QPalette pal_;

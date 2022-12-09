@@ -13,21 +13,26 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(include)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Svg LinguistTools)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Svg LinguistTools)
 
-set(RC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/assets/appicon.rc")
+set(RC_FILES
+    "assets/appicon.rc"
+    "assets/LockHere.qrc"
+)
 
 set(TS_FILES)
 
 set(PROJECT_SOURCES
         "src/main.cpp"
         "src/framelessplacer.cpp"
-        "src/loginwelcome.cpp"
-        "src/lineinput.cpp"
         "include/lockheresdk/ui/framelessplacer.h"
+        "src/loginwelcome.cpp"
         "include/lockheresdk/ui/loginwelcome.h"
+        "src/lineinput.cpp"
         "include/lockheresdk/ui/lineinput.h"
+        "src/svghelper.cpp"
+        "include/lockheresdk/svghelper.h"
         ${TS_FILES}
         ${RC_FILES}
 )
@@ -59,7 +64,7 @@ else()
     qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 
-target_link_libraries(LockHere PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(LockHere PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Svg)
 
 set_target_properties(LockHere PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

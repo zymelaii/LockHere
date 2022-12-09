@@ -32,7 +32,7 @@ LineInput::LineInput(QWidget* parent)
 
 	setStyleSheet(R"(
         background: #252525;
-        border-radius: 16px;
+        border-radius: 8px;
         border: 1px solid #303030;
     )");
 
@@ -43,9 +43,7 @@ LineInput::LineInput(QWidget* parent)
 
 	lbHint = new QLabel(this);
 	{
-		QFont font;
-		font.setFamily("Open Sans");
-		font.setPointSize(12);
+        QFont font("Open Sans", 12);
 		font.setCapitalization(QFont::Capitalize);
 		lbHint->setFont(font);
 	}
@@ -59,9 +57,7 @@ LineInput::LineInput(QWidget* parent)
 
 	leInput = new QLineEditTrick(this);
 	{
-		QFont font;
-		font.setFamily("Open Sans");
-		font.setPointSize(16);
+		QFont font("Open Sans", 16);
 		font.setBold(true);
 		leInput->setFont(font);
 	}
@@ -83,6 +79,7 @@ LineInput::LineInput(QWidget* parent)
 	connect(this, SIGNAL(deactivate()), this, SLOT(onDeactivate()));
 
 	connect(leInput, SIGNAL(returnPressed()), this, SLOT(onFocusNext()));
+	connect(leInput, &QLineEdit::textChanged, this, &LineInput::textChanged);
 }
 
 bool LineInput::eventFilter(QObject* obj, QEvent* event) {
@@ -143,14 +140,12 @@ void LineInput::onActivate() {
 
 	setStyleSheet(R"(
         background: #252525;
-        border-radius: 16px;
+        border-radius: 8px;
         border: 1px solid #3ab0ef;
     )");
 
 	{
-		QFont font;
-		font.setFamily("Open Sans");
-		font.setPointSize(8);
+		QFont font("Open Sans", 8);
 		font.setCapitalization(QFont::AllUppercase);
 		lbHint->setFont(font);
 	}
@@ -175,7 +170,7 @@ void LineInput::onDeactivate() {
 
 	setStyleSheet(R"(
         background: #252525;
-        border-radius: 16px;
+        border-radius: 8px;
         border: 1px solid #303030;
     )");
 
@@ -185,9 +180,7 @@ void LineInput::onDeactivate() {
 	}
 
 	{
-		QFont font;
-		font.setFamily("Open Sans");
-		font.setPointSize(12);
+		QFont font("Open Sans", 12);
 		font.setCapitalization(QFont::Capitalize);
 		lbHint->setFont(font);
 	}
