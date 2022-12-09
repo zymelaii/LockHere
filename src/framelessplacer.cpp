@@ -43,7 +43,7 @@ FramelessPlacer::FramelessPlacer(QWidget* parent)
 	: QWidget{parent}
 	, data_{new FramelessPlacerPrivate} {
 	//! 去除窗体边框
-	setWindowFlags(Qt::FramelessWindowHint);
+	setWindowFlags(Qt::FramelessWindowHint |  Qt::WindowMinimizeButtonHint);
 
 	//! 设置窗口背景透明
 	setAttribute(Qt::WA_TranslucentBackground);
