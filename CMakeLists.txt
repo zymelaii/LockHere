@@ -11,6 +11,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include_directories(include)
+
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
 
@@ -19,13 +21,13 @@ set(RC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/assets/appicon.rc")
 set(TS_FILES)
 
 set(PROJECT_SOURCES
-        main.cpp
-        framelessplacer.cpp
-        framelessplacer.h
-        loginwelcome.cpp
-        loginwelcome.h
-        lineinput.cpp
-        lineinput.h
+        "src/main.cpp"
+        "src/framelessplacer.cpp"
+        "src/loginwelcome.cpp"
+        "src/lineinput.cpp"
+        "include/lockheresdk/ui/framelessplacer.h"
+        "include/lockheresdk/ui/loginwelcome.h"
+        "include/lockheresdk/ui/lineinput.h"
         ${TS_FILES}
         ${RC_FILES}
 )
