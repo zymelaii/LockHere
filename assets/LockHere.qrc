@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/icons/">
+    <qresource prefix="/icons">
         <file>app.ico</file>
         <file>logo.png</file>
         <file>close.svg</file>
@@ -11,10 +11,10 @@
         <file>danger.svg</file>
         <file>lock-unlock.svg</file>
     </qresource>
-    <qresource prefix="/qss/">
-        <file>loginwelcom.qss</file>
+    <qresource prefix="/qss">
+        <file>dark.qss</file>
     </qresource>
-    <qresource prefix="/font/">
+    <qresource prefix="/font">
         <file>OpenSans.ttf</file>
     </qresource>
 </RCC>

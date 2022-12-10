@@ -19,34 +19,19 @@ public:
 	explicit LoginWelcome(QWidget* parent = nullptr);
 
 private:
-	void uiInitSysmenu();
 	void uiInitLogo();
 	void uiInitMain();
 	void setUnlockEnable(bool enabled);
 
-signals:
-	void shouldMinimizeToTray();
-	void shouldMinimize();
-	void shouldClose();
-
 private:
-	QVBoxLayout* layout;
-
-	QHBoxLayout* hloSysmenu;
-	QPushButton* btMinimizeToTray;
-	QPushButton* btMinimize;
-	QPushButton* btClose;
-
-	QLabel* lbLogo;
-
-	QFrame*			  frMain;
-	QVBoxLayout*	  vloMain;
-	QLabel*			  lbWelcom;
-	utils::LineInput* liAccount;
-	utils::LineInput* liPassword;
-	QPushButton*	  btUnlock;
+    QVBoxLayout*	  vloMain;
+    QLabel*			  lbLogo;		//!< logo
+    QFrame*			  frMain;		//!< mainFrame
+    QLabel*			  lbWelcom;		//!< welcomeText
+    utils::LineInput* liAccount;	//!< account
+    utils::LineInput* liPassword;	//!< password
+    QPushButton*	  btUnlock;		//!< unlock
 };
-
 
 }	// namespace Ui
 }	// namespace LockHere

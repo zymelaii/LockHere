@@ -26,10 +26,13 @@ QPixmap* loadSvgAsPixmap(const QString& path, QSize size, QColor currentColor) {
 	pixmap		 = new QPixmap(svgSize);
 	pixmap->fill(Qt::transparent);
 
-	QPainter painter;
-	painter.begin(pixmap);
+	QPainter painter(pixmap);
+	if (!painter.isActive()) {
+		delete pixmap;
+		return nullptr;
+	}
+
 	renderer.render(&painter);
-	painter.end();
 
 	return pixmap;
 }

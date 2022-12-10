@@ -11,35 +11,23 @@ namespace Ui {
 LoginWelcome::LoginWelcome(QWidget* parent)
 	: QWidget(parent) {
 	//! init ui
-	uiInitSysmenu();
 	uiInitLogo();
 	uiInitMain();
 
 	//! complete layout
-	layout = new QVBoxLayout(this);
-	layout->addLayout(hloSysmenu);
+    auto layout = new QVBoxLayout(this);
 	layout->addWidget(lbLogo);
 	layout->addWidget(frMain);
-
-	//! install qss
-	QFile qssFile(":/qss/loginwelcom.qss");
-	qssFile.open(QIODevice::ReadOnly);
-	setStyleSheet(qssFile.readAll());
-	qssFile.close();
 
 	//! configure
 	setFocusPolicy(Qt::NoFocus);
 
 	//! connect signal & slot
-	connect(btMinimizeToTray, &QPushButton::clicked, this, &LoginWelcome::shouldMinimizeToTray);
-	connect(btMinimize, &QPushButton::clicked, this, &LoginWelcome::shouldMinimize);
-	connect(btClose, &QPushButton::clicked, this, &LoginWelcome::shouldClose);
-
 	auto cbCheckUnlock = [this] {
 		auto key = !liPassword->text().isEmpty() && !liAccount->text().isEmpty();
 		if (key && !btUnlock->isEnabled()) {
 			setUnlockEnable(true);
-		} else if (!key && btUnlock->isEnabled()) {
+        } else if (!key && btUnlock->isEnabled()) {
 			setUnlockEnable(false);
 		}
 	};
@@ -58,72 +46,19 @@ LoginWelcome::LoginWelcome(QWidget* parent)
 	});
 }
 
-void LoginWelcome::uiInitSysmenu() {
-	//! allocate
-	hloSysmenu		 = new QHBoxLayout;
-	btMinimizeToTray = new QPushButton;
-	btMinimize		 = new QPushButton;
-	btClose			 = new QPushButton;
-
-	//! init hloSysmenu
-	hloSysmenu->setAlignment(Qt::AlignRight);
-
-	//! init btMinimizeToTray
-	btMinimizeToTray->setObjectName("btMinimizeToTray");
-	btMinimizeToTray->setDefault(false);
-	btMinimizeToTray->setFixedSize(16, 16);
-	{
-		auto pSvgPixmap = loadSvgAsPixmap(QStringLiteral(":/icons/minimize-alt.svg"),
-										  btMinimizeToTray->size() - QSize(4, 4),
-										  Qt::white);
-		btMinimizeToTray->setIcon(*pSvgPixmap);
-		delete pSvgPixmap;
-	}
-	btMinimizeToTray->setFocusPolicy(Qt::NoFocus);
-
-	//! init btMinimize
-	btMinimize->setObjectName("btMinimize");
-	btMinimize->setDefault(false);
-	btMinimize->setFixedSize(16, 16);
-	{
-		auto pSvgPixmap = loadSvgAsPixmap(
-			QStringLiteral(":/icons/minimize.svg"), btMinimize->size() - QSize(4, 4), Qt::white);
-		btMinimize->setIcon(*pSvgPixmap);
-		delete pSvgPixmap;
-	}
-	btMinimize->setFocusPolicy(Qt::NoFocus);
-
-	//! init btClose
-	btClose->setObjectName("btClose");
-	btClose->setDefault(false);
-	btClose->setFixedSize(16, 16);
-	{
-		auto pSvgPixmap = loadSvgAsPixmap(
-			QStringLiteral(":/icons/close.svg"), btClose->size() - QSize(4, 4), Qt::white);
-		btClose->setIcon(*pSvgPixmap);
-		delete pSvgPixmap;
-	}
-	btClose->setFocusPolicy(Qt::NoFocus);
-
-	//! complete layout
-	hloSysmenu->addWidget(btMinimizeToTray);
-	hloSysmenu->addWidget(btMinimize);
-	hloSysmenu->addWidget(btClose);
-}
-
 void LoginWelcome::uiInitLogo() {
 	//! allocate
 	lbLogo = new QLabel(this);
 
 	//! init lbLogo
-	lbLogo->setObjectName("lbLogo");
+    lbLogo->setObjectName("logo");
 	lbLogo->setPixmap(QPixmap(":/icons/logo.png").scaledToHeight(100, Qt::SmoothTransformation));
 	lbLogo->setAlignment(Qt::AlignCenter);
 }
 
 void LoginWelcome::uiInitMain() {
 	//! allocate
-	frMain	   = new QFrame;
+    frMain	   = new QFrame;
 	vloMain	   = new QVBoxLayout(frMain);
 	lbWelcom   = new QLabel(frMain);
 	liAccount  = new utils::LineInput(frMain);
@@ -131,30 +66,32 @@ void LoginWelcome::uiInitMain() {
 	btUnlock   = new QPushButton(frMain);
 
 	//! init frMain
-	frMain->setObjectName("frMain");
+    frMain->setObjectName("mainFrame");
 	frMain->setContentsMargins(-1, 8, -1, 8);
 
 	//! init vloMain
 	vloMain->setSpacing(16);
 
 	//! init lbWelcom
-	lbWelcom->setObjectName("lbWelcom");
+    lbWelcom->setObjectName("welcomeText");
 	lbWelcom->setAlignment(Qt::AlignHCenter);
 	lbWelcom->setText("Welcom to use Lock Here!");
 
 	//! init liAccount
+    liAccount->setObjectName("account");
 	liAccount->setHint("logged in as");
 	liAccount->setOptionEnabled(true);
 	liAccount->setOptionIcon(QStringLiteral(":/icons/more.svg"), QColor("#e1e1e1"));
 
 	//! init liPassword
+    liPassword->setObjectName("password");
 	liPassword->setHint("enter master password");
 	liPassword->setOptionEnabled(true);
 	liPassword->setOptionIcon(QStringLiteral(":/icons/eye-alt.svg"), QColor("#e1e1e1"));
 	liPassword->setEchoMode(QLineEdit::Password);
 
 	//! init btUnlock
-	btUnlock->setObjectName("btUnlock");
+    btUnlock->setObjectName("unlock");
 	btUnlock->setFixedHeight(32);
 	setUnlockEnable(false);
 	btUnlock->setText("Unlock");

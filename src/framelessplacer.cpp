@@ -3,6 +3,7 @@
 #include <QMouseEvent>
 #include <QGridLayout>
 #include <QGraphicsDropShadowEffect>
+#include <QFile>
 
 #include <QDebug>
 
@@ -15,13 +16,14 @@ struct FramelessPlacer::FramelessPlacerPrivate {
 		effect->setOffset(0, 0);
 		placer_.setGraphicsEffect(effect);
 
-		//! 应用 QSS
-		placer_.setStyleSheet(QString(R"(.QWidget {
+        //! 应用 QSS
+        placer_.setObjectName("this_FramelessPlacer");
+        placer_.setStyleSheet(QString(R"(#this_FramelessPlacer {
             background: %1;
             border-radius: %2px;
         })")
-								  .arg(bgColor_.name())
-								  .arg(borderRadius_));
+                                  .arg(bgColor_.name())
+                                  .arg(borderRadius_));
 	}
 
 	void setContent(QWidget* content) {
@@ -43,10 +45,12 @@ FramelessPlacer::FramelessPlacer(QWidget* parent)
 	: QWidget{parent}
 	, data_{new FramelessPlacerPrivate} {
 	//! 去除窗体边框
-	setWindowFlags(Qt::FramelessWindowHint |  Qt::WindowMinimizeButtonHint);
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
 
 	//! 设置窗口背景透明
 	setAttribute(Qt::WA_TranslucentBackground);
+
+    setFocusPolicy(Qt::StrongFocus);
 }
 
 FramelessPlacer::~FramelessPlacer() {
@@ -75,6 +79,16 @@ FramelessPlacer* FramelessPlacer::setContent(QWidget* content) {
 	setLayout(lo_grid);
 
 	return this;
+}
+
+FramelessPlacer* FramelessPlacer::installStyleSheet(const QString& url) {
+    QFile qssFile(url);
+    qssFile.open(QIODevice::ReadOnly);
+    if (qssFile.isOpen()) {
+        setStyleSheet(qssFile.readAll());
+        qssFile.close();
+    }
+    return this;
 }
 
 void FramelessPlacer::mousePressEvent(QMouseEvent* e) {

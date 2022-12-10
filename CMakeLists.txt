@@ -27,9 +27,12 @@ set(PROJECT_SOURCES
         "src/main.cpp"
         "src/framelessplacer.cpp"
         "include/lockheresdk/ui/framelessplacer.h"
+        "src/sysmenubar.cpp"
+        "include/lockheresdk/ui/sysmenubar.h"
         "src/loginwelcome.cpp"
         "include/lockheresdk/ui/loginwelcome.h"
         "src/lineinput.cpp"
+        "src/lineinput_p.h"
         "include/lockheresdk/ui/lineinput.h"
         "src/svghelper.cpp"
         "include/lockheresdk/svghelper.h"
@@ -42,6 +45,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
+    target_compile_options(LockHere PRIVATE -g)
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET LockHere APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
