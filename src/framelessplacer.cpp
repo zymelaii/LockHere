@@ -50,7 +50,7 @@ FramelessPlacer::FramelessPlacer(QWidget* parent)
 	//! 设置窗口背景透明
 	setAttribute(Qt::WA_TranslucentBackground);
 
-    setFocusPolicy(Qt::StrongFocus);
+    setFocusPolicy(Qt::ClickFocus);
 }
 
 FramelessPlacer::~FramelessPlacer() {

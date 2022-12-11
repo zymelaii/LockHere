@@ -19,8 +19,11 @@ QLineEditTrick::QLineEditTrick(QWidget* parent)
 
 void QLineEditTrick::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::MouseButton::LeftButton) {
-        setFocus(Qt::MouseFocusReason);
+        if (!hasFocus()) {
+            setFocus(Qt::MouseFocusReason);
+        }
     }
+    QLineEdit::mousePressEvent(event);
 }
 
 void QLineEditTrick::focusOutEvent(QFocusEvent* event) {
