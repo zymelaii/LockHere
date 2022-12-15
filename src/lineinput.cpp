@@ -1,7 +1,7 @@
 #include <lockheresdk/ui/lineinput.h>
 #include "lineinput_p.h"
 
-#include <lockheresdk/svghelper.h>
+#include <lockheresdk/ui/utils/svghelper.h>
 #include <QDebug>
 #include <QFont>
 #include <QFocusEvent>

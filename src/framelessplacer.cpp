@@ -1,4 +1,4 @@
-#include <lockheresdk/ui/framelessplacer.h>
+#include <lockheresdk/ui/utils/framelessplacer.h>
 
 #include <QMouseEvent>
 #include <QGridLayout>
@@ -7,14 +7,18 @@
 
 #include <QDebug>
 
+namespace LockHere {
+
 struct FramelessPlacer::FramelessPlacerPrivate {
+    FramelessPlacerPrivate() { new QGridLayout(&placer_); }
+
 	void updatePlacer() {
 		//! 应用边缘阴影效果
 		auto effect = new QGraphicsDropShadowEffect(&placer_);
 		effect->setBlurRadius(FramelessPlacer::shadowRadius);
 		effect->setColor(bgColor_);
 		effect->setOffset(0, 0);
-		placer_.setGraphicsEffect(effect);
+        placer_.setGraphicsEffect(effect);
 
         //! 应用 QSS
         placer_.setObjectName("this_FramelessPlacer");
@@ -26,11 +30,17 @@ struct FramelessPlacer::FramelessPlacerPrivate {
                                   .arg(borderRadius_));
 	}
 
-	void setContent(QWidget* content) {
-		auto lo_grid = new QGridLayout;
-		lo_grid->addWidget(content, 0, 0);
+    QWidget* setContent(QWidget* content) {
+        QWidget* lastContent = nullptr;
+        auto	 lo_grid	 = static_cast<QGridLayout*>(placer_.layout());
+        if (lo_grid->count() > 0) {
+            lastContent = lo_grid->itemAtPosition(0, 0)->widget();
+            lo_grid->removeWidget(lastContent);
+            lastContent->setParent(nullptr);
+        }
+        lo_grid->addWidget(content, 0, 0);
 		lo_grid->setContentsMargins(borderRadius_, borderRadius_, borderRadius_, borderRadius_);
-		placer_.setLayout(lo_grid);
+        return lastContent;
 	}
 
 	QPoint mousePressedPos_;   //!< 鼠标按下开始拖动时时的坐标
@@ -51,44 +61,37 @@ FramelessPlacer::FramelessPlacer(QWidget* parent)
 	setAttribute(Qt::WA_TranslucentBackground);
 
     setFocusPolicy(Qt::ClickFocus);
+
+    auto lo_grid = new QGridLayout(this);
+    lo_grid->addWidget(&data_->placer_, 0, 0);
+    lo_grid->setContentsMargins(shadowRadius, shadowRadius, shadowRadius, shadowRadius);
 }
 
 FramelessPlacer::~FramelessPlacer() {
 	delete data_;
 }
 
-FramelessPlacer* FramelessPlacer::setBackgroundColor(const QColor& bgColor) {
+void FramelessPlacer::setBackgroundColor(const QColor& bgColor) {
 	data_->bgColor_ = bgColor;
-	return this;
 }
 
-FramelessPlacer* FramelessPlacer::setBorderRadius(int borderRadius) {
+void FramelessPlacer::setBorderRadius(int borderRadius) {
 	data_->borderRadius_ = borderRadius;
-	return this;
 }
 
-FramelessPlacer* FramelessPlacer::setContent(QWidget* content) {
-	//! 更新内容组件
-	data_->updatePlacer();
-	data_->setContent(content);
-
-	//! 布置内容组件
-	auto lo_grid = new QGridLayout;
-	lo_grid->addWidget(&data_->placer_, 0, 0);
-	lo_grid->setContentsMargins(shadowRadius, shadowRadius, shadowRadius, shadowRadius);
-	setLayout(lo_grid);
-
-	return this;
-}
-
-FramelessPlacer* FramelessPlacer::installStyleSheet(const QString& url) {
+void FramelessPlacer::installStyleSheet(const QString& url) {
     QFile qssFile(url);
     qssFile.open(QIODevice::ReadOnly);
     if (qssFile.isOpen()) {
         setStyleSheet(qssFile.readAll());
         qssFile.close();
     }
-    return this;
+}
+
+QWidget* FramelessPlacer::setContent(QWidget* content) {
+    //! 更新内容组件
+    data_->updatePlacer();
+    return data_->setContent(content);
 }
 
 void FramelessPlacer::mousePressEvent(QMouseEvent* e) {
@@ -108,3 +111,5 @@ void FramelessPlacer::mouseMoveEvent(QMouseEvent* e) {
 		move(data_->winPosAsDrag_ + delta);
 	}
 }
+
+}	// namespace LockHere

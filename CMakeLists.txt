@@ -25,17 +25,23 @@ set(TS_FILES)
 
 set(PROJECT_SOURCES
         "src/main.cpp"
+        "src/svghelper.cpp"
+        "include/lockheresdk/ui/utils/svghelper.h"
         "src/framelessplacer.cpp"
-        "include/lockheresdk/ui/framelessplacer.h"
+        "include/lockheresdk/ui/utils/framelessplacer.h"
+        "src/lineinput.cpp"
+        "src/lineinput_p.h"
         "src/sysmenubar.cpp"
         "include/lockheresdk/ui/sysmenubar.h"
         "src/loginwelcome.cpp"
         "include/lockheresdk/ui/loginwelcome.h"
-        "src/lineinput.cpp"
-        "src/lineinput_p.h"
         "include/lockheresdk/ui/lineinput.h"
-        "src/svghelper.cpp"
-        "include/lockheresdk/svghelper.h"
+        "src/navitem.cpp"
+        "include/lockheresdk/ui/navitem.h"
+        "src/navitemgroup.cpp"
+        "include/lockheresdk/ui/navitemgroup.h"
+        "src/navigator.cpp"
+        "include/lockheresdk/ui/navigator.h"
         ${TS_FILES}
         ${RC_FILES}
 )

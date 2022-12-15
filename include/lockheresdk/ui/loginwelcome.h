@@ -23,6 +23,9 @@ private:
 	void uiInitMain();
 	void setUnlockEnable(bool enabled);
 
+signals:
+    void tryUnlock(const QString& id, const QString& key);
+
 private:
     QVBoxLayout*	  vloMain;
     QLabel*			  lbLogo;		//!< logo

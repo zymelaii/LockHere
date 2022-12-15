@@ -1,6 +1,6 @@
 #include <lockheresdk/ui/loginwelcome.h>
 
-#include <lockheresdk/svghelper.h>
+#include <lockheresdk/ui/utils/svghelper.h>
 #include <QApplication>
 #include <QFile>
 #include <QStyle>
@@ -34,7 +34,9 @@ LoginWelcome::LoginWelcome(QWidget* parent)
 
 	connect(liAccount, &utils::LineInput::textChanged, this, cbCheckUnlock);
 	connect(liPassword, &utils::LineInput::textChanged, this, cbCheckUnlock);
-
+    connect(btUnlock, &QPushButton::clicked, this, [this] {
+        emit tryUnlock(liAccount->text(), liPassword->text());
+    });
 	connect(liPassword, &utils::LineInput::clicked, this, [this] {
 		if (liPassword->echoMode() == QLineEdit::Password) {
 			liPassword->setEchoMode(QLineEdit::Normal);
@@ -58,7 +60,7 @@ void LoginWelcome::uiInitLogo() {
 
 void LoginWelcome::uiInitMain() {
 	//! allocate
-    frMain	   = new QFrame;
+    frMain	   = new QFrame(this);
 	vloMain	   = new QVBoxLayout(frMain);
 	lbWelcom   = new QLabel(frMain);
 	liAccount  = new utils::LineInput(frMain);
@@ -75,17 +77,17 @@ void LoginWelcome::uiInitMain() {
 	//! init lbWelcom
     lbWelcom->setObjectName("welcomeText");
 	lbWelcom->setAlignment(Qt::AlignHCenter);
-	lbWelcom->setText("Welcom to use Lock Here!");
+    lbWelcom->setText(tr("Welcom to use Lock Here!"));
 
 	//! init liAccount
     liAccount->setObjectName("account");
-	liAccount->setHint("logged in as");
+    liAccount->setHint(tr("logged in as"));
 	liAccount->setOptionEnabled(true);
 	liAccount->setOptionIcon(QStringLiteral(":/icons/more.svg"), QColor("#e1e1e1"));
 
 	//! init liPassword
     liPassword->setObjectName("password");
-	liPassword->setHint("enter master password");
+    liPassword->setHint(tr("enter master password"));
 	liPassword->setOptionEnabled(true);
 	liPassword->setOptionIcon(QStringLiteral(":/icons/eye-alt.svg"), QColor("#e1e1e1"));
 	liPassword->setEchoMode(QLineEdit::Password);
@@ -94,7 +96,7 @@ void LoginWelcome::uiInitMain() {
     btUnlock->setObjectName("unlock");
 	btUnlock->setFixedHeight(32);
 	setUnlockEnable(false);
-	btUnlock->setText("Unlock");
+    btUnlock->setText(tr("Unlock"));
 
 	//! complete layout
 	vloMain->addWidget(lbWelcom);

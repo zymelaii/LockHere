@@ -10,6 +10,11 @@
         <file>eye-alt.svg</file>
         <file>danger.svg</file>
         <file>lock-unlock.svg</file>
+        <file>chevron-down.svg</file>
+        <file>chevron-right.svg</file>
+        <file>album.svg</file>
+        <file>attachment.svg</file>
+        <file>tag.svg</file>
     </qresource>
     <qresource prefix="/qss">
         <file>dark.qss</file>

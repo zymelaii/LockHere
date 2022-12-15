@@ -1,4 +1,4 @@
-#include <lockheresdk/svghelper.h>
+#include <lockheresdk/ui/utils/svghelper.h>
 
 #include <QFile>
 #include <QSvgRenderer>
