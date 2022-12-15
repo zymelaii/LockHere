@@ -1,0 +1,118 @@
+QWidget {
+    background: transparent;
+    border: none;
+}
+
+LockHere--Ui--utils--NavItem {
+    color: white;
+    font: normal normal 15pt "Open Sans";
+    border-radius: 8px;
+    background: transparent;
+}
+LockHere--Ui--utils--NavItem[state="hover"] {
+    background: #303030;
+}
+LockHere--Ui--utils--NavItem[state="pressed"] {
+    background: #5d5d5d;
+}
+LockHere--Ui--utils--NavItem[state="selected"] {
+    background: #303030;
+    color: #3ab0ef;
+}
+LockHere--Ui--utils--NavItemGroup QLabel {
+    font: normal bold 8pt "Open Sans";
+    color: gray;
+}
+
+LockHere--Ui--SysMenuBar * {
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+}
+LockHere--Ui--SysMenuBar #minimizeToTray:hover, LockHere--Ui--SysMenuBar #minimize:hover {
+    background: #808080;
+}
+LockHere--Ui--SysMenuBar #close:hover {
+    background: red;
+}
+
+LockHere--Ui--LoginWelcome #logo {
+    background: transparent;
+    color: white;
+    border: none;
+}
+
+LockHere--Ui--LoginWelcome #mainFrame {
+    background: #252525;
+    border-radius: 16px;
+    border: 1px solid #303030;
+}
+
+LockHere--Ui--LoginWelcome #welcomeText {
+    background: transparent;
+    color: #9a9a9a;
+    border: none;
+}
+
+LockHere--Ui--LoginWelcome #unlock {
+    border: none;
+    border-radius: 8px;
+}
+LockHere--Ui--LoginWelcome #unlock:enabled {
+    background: #45bbf9;
+    color: #dae0e3;
+}
+LockHere--Ui--LoginWelcome #unlock:disabled {
+    background: #306e8f;
+    color: #818283;
+    border: none;
+}
+LockHere--Ui--LoginWelcome #unlock:hover {
+    background: #45a2f9;
+}
+LockHere--Ui--LoginWelcome #unlock::pressed {
+    background: #4587f9;
+}
+LockHere--Ui--LoginWelcome #unlock:focus {
+    border: 1px solid white;
+    outline: none;
+}
+LockHere--Ui--LoginWelcome #unlock:checked {
+    border: 1px solid white;
+    outline: none;
+}
+
+LockHere--Ui--utils--LineInput {
+    background: transparent;
+    color: #7d7d7d;
+    border-radius: 8px;
+    border: 1px solid #303030;
+}
+LockHere--Ui--utils--LineInput:focus {
+    color: #3ab0ef;
+    border: 1px solid #3ab0ef;
+}
+LockHere--Ui--utils--LineInput * {
+    background: transparent;
+    color: #7d7d7d;
+}
+LockHere--Ui--utils--LineInput *:focus {
+    color: #3ab0ef;
+}
+LockHere--Ui--utils--LineInput #hint {
+    border: none;
+}
+LockHere--Ui--utils--LineInput #input {
+    color: #f0f0f0;
+    border: none;
+}
+LockHere--Ui--utils--LineInput #option {
+    border-radius: 24;
+    border: none;
+}
+LockHere--Ui--utils--LineInput #option:hover {
+    background: #303030;
+}
+LockHere--Ui--utils--LineInput #option:pressed {
+    background: #5d5d5d;
+}
