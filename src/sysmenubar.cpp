@@ -36,7 +36,9 @@ void SysMenuBar::uiInit() {
                                           btMinimizeToTray->size() - QSize(4, 4),
                                           Qt::white);
         btMinimizeToTray->setIcon(*pSvgPixmap);
-        delete pSvgPixmap;
+        //! NOTE: setIcon(*pSvgPixmap) will ctor a new QIcon object that contains
+        //> memory of pSvgPixmap, and it will also release pSvgPixmap on dtor.
+        // delete pSvgPixmap;
     }
     btMinimizeToTray->setFocusPolicy(Qt::NoFocus);
 
@@ -48,7 +50,8 @@ void SysMenuBar::uiInit() {
         auto pSvgPixmap = loadSvgAsPixmap(
             QStringLiteral(":/icons/minimize.svg"), btMinimize->size() - QSize(4, 4), Qt::white);
         btMinimize->setIcon(*pSvgPixmap);
-        delete pSvgPixmap;
+        //! NOTE: see comment above
+        // delete pSvgPixmap;
     }
     btMinimize->setFocusPolicy(Qt::NoFocus);
 
@@ -60,7 +63,8 @@ void SysMenuBar::uiInit() {
         auto pSvgPixmap = loadSvgAsPixmap(
             QStringLiteral(":/icons/close.svg"), btClose->size() - QSize(4, 4), Qt::white);
         btClose->setIcon(*pSvgPixmap);
-        delete pSvgPixmap;
+        //! NOTE: see comment above
+        // delete pSvgPixmap;
     }
     btClose->setFocusPolicy(Qt::NoFocus);
 

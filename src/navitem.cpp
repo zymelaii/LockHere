@@ -99,7 +99,6 @@ void NavItem::paintEvent(QPaintEvent* event) {
 	auto r = rect();
 	r.adjust(spacing_, spacing_, -spacing_, -spacing_);
 
-
 	auto width	  = opt.fontMetrics.height();
 	auto iconSize = QSize(width, width) * 0.8;
 	auto yOffset  = (r.height() - iconSize.height()) / 2;
@@ -108,9 +107,10 @@ void NavItem::paintEvent(QPaintEvent* event) {
 	QRect ExpandRect = iconRect.translated(r.width() - iconRect.right() - yOffset, 0);
 
 	if (!svgIconPath_.isNull()) {
-		auto pixmap = loadSvgAsPixmap(svgIconPath_, iconSize, painter.pen().color());
+		auto pixmap = loadSvgAsPixmap(svgIconPath_, iconSize * 4, painter.pen().color());
 		painter.drawPixmap(iconRect, *pixmap);
-		delete pixmap;
+		//! NOTE: see comment in src/sysmenubar.cpp
+		// delete pixmap;
 	} else if (!icon_.isNull()) {
 		painter.drawPixmap(iconRect, icon_);
 	}
@@ -125,9 +125,10 @@ void NavItem::paintEvent(QPaintEvent* event) {
 	} else {
 		QString expandIconPath =
 			isExpanded() ? ":/icons/chevron-down.svg" : ":/icons/chevron-right.svg";
-		auto pixmap = loadSvgAsPixmap(expandIconPath, iconSize, painter.pen().color());
+		auto pixmap = loadSvgAsPixmap(expandIconPath, iconSize * 4, painter.pen().color());
 		painter.drawPixmap(ExpandRect, *pixmap);
-		delete pixmap;
+		//! NOTE: see comment above
+		// delete pixmap;
 	}
 }
 
@@ -186,10 +187,10 @@ QString NavItem::state() const {
 
 void NavItem::updateState(bool shouldRepaint) {
 	QString newState;
-    if (isSelected() && !isExpandable()) {
-		newState = "selected";
-	} else if (d->pressed) {
+	if (d->pressed) {
 		newState = "pressed";
+	} else if (isSelected() && !isExpandable()) {
+		newState = "selected";
 	} else if (d->hover) {
 		newState = "hover";
 	} else {

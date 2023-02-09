@@ -15,11 +15,11 @@ QPixmap* loadSvgAsPixmap(const QString& path, QSize size, QColor currentColor) {
 	file.open(QIODevice::ReadOnly);
 
 	if (!file.isOpen()) {
-        return nullptr;
+		return nullptr;
 	}
 
 	QSvgRenderer renderer(
-        file.readAll().replace(R"("currentColor")", 14, sColor.toLocal8Bit(), sColor.length() - 1));
+		file.readAll().replace(R"("currentColor")", 14, sColor.toLocal8Bit(), sColor.length() - 1));
 	file.close();
 
 	auto svgSize = size.isNull() ? renderer.defaultSize() : size;
@@ -27,6 +27,8 @@ QPixmap* loadSvgAsPixmap(const QString& path, QSize size, QColor currentColor) {
 	pixmap->fill(Qt::transparent);
 
 	QPainter painter(pixmap);
+	painter.setRenderHint(QPainter::Antialiasing, true);
+	painter.setRenderHint(QPainter::TextAntialiasing, true);
 	if (!painter.isActive()) {
 		delete pixmap;
 		return nullptr;
