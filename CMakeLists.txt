@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(LockHere VERSION 0.1 LANGUAGES CXX)
+project(
+    LockHere
+    VERSION 0.1.0
+    DESCRIPTION "一个仿 Padloc 的本地密钥管理器"
+	HOMEPAGE_URL "https://github.com/zymelaii/LockHere"
+    LANGUAGES CXX
+)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -13,84 +19,43 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(include)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Svg LinguistTools)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Svg LinguistTools)
+find_package(QT NAMES Qt6)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Svg)
 
-set(RC_FILES
-    "assets/appicon.rc"
-    "assets/LockHere.qrc"
+aux_source_directory(src SOURCE_FILES)
+file(GLOB_RECURSE HEADER_FILES include/*.h)
+file(GLOB RC_FILES assets/*.*rc)
+
+qt_add_executable(
+	${PROJECT_NAME}
+	MANUAL_FINALIZATION
+	${SOURCE_FILES} ${HEADER_FILES} ${RC_FILES}
 )
 
-set(TS_FILES)
-
-set(PROJECT_SOURCES
-        "src/main.cpp"
-        "src/svghelper.cpp"
-        "include/lockheresdk/ui/utils/svghelper.h"
-        "src/framelessplacer.cpp"
-        "include/lockheresdk/ui/utils/framelessplacer.h"
-        "src/lineinput.cpp"
-        "src/lineinput_p.h"
-        "src/sysmenubar.cpp"
-        "include/lockheresdk/ui/sysmenubar.h"
-        "src/loginwelcome.cpp"
-        "include/lockheresdk/ui/loginwelcome.h"
-        "include/lockheresdk/ui/lineinput.h"
-        "src/navitem.cpp"
-        "include/lockheresdk/ui/navitem.h"
-        "src/navitemgroup.cpp"
-        "include/lockheresdk/ui/navitemgroup.h"
-        "src/navigator.cpp"
-        "include/lockheresdk/ui/navigator.h"
-        ${TS_FILES}
-        ${RC_FILES}
+target_include_directories(
+    ${PROJECT_NAME}
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(LockHere
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-    )
-    target_compile_options(LockHere PRIVATE -g)
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET LockHere APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
-
-    qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
-else()
-    if(ANDROID)
-        add_library(LockHere SHARED
-            ${PROJECT_SOURCES}
-        )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
-    else()
-        add_executable(LockHere
-            ${PROJECT_SOURCES}
-        )
-    endif()
-
-    qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
-endif()
-
-target_link_libraries(LockHere
-PRIVATE
-    Qt${QT_VERSION_MAJOR}::Widgets
-    Qt${QT_VERSION_MAJOR}::Svg)
-
-set_target_properties(LockHere PROPERTIES
-    MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    MACOSX_BUNDLE TRUE
-    WIN32_EXECUTABLE TRUE
+target_link_libraries(
+    ${PROJECT_NAME}
+    PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg
 )
 
-install(TARGETS LockHere
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+qt_finalize_executable(${PROJECT_NAME})
 
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(LockHere)
-endif()
+set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES WIN32_EXECUTABLE TRUE
+)
+
+include(GNUInstallDirs)
+
+install(
+    TARGETS ${PROJECT_NAME}
+    EXPORT ${PROJECT_NAME}Targets
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
